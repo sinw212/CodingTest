@@ -2,6 +2,7 @@ package com.example.kotlincodingtest.algorithm
 
 fun main() {
     println(Search().bruteForceSearch(intArrayOf(1, 4, 6, 8, 2, 9), 14))
+    println(Search().backtracking(intArrayOf(1, 2, 3, 4), 3, 0, mutableListOf()))
     println(Search().binarySearch(intArrayOf(1, 4, 6, 8, 2, 9), 8))
 }
 
@@ -23,6 +24,25 @@ class Search {
             }
         }
         return -1
+    }
+
+    /**
+     * 완전 탐색(Exhaustive Search) 중 백트래킹(backtracking)
+     */
+    //에시) 배열에서 크기가 k인 조합 개수 구하기
+    var count = 0
+    fun backtracking(arr: IntArray, k: Int, start: Int, result: MutableList<Int>): Int {
+        if(result.size == k) {
+            println(result)
+            return count++
+        }
+        
+        for(i in start until arr.size) {
+            result.add(arr[i])
+            backtracking(arr, k, i+1, result)
+            result.removeAt(result.size - 1)
+        }
+        return count
     }
 
     /**
