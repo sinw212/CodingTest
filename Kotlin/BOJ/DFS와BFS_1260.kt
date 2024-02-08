@@ -3,7 +3,6 @@ package com.example.kotlincodingtest.baekjoon.running
 import java.io.BufferedReader
 import java.io.InputStreamReader
 import java.util.LinkedList
-import java.util.Queue
 
 var graph: Array<IntArray> = arrayOf()
 var visited: BooleanArray = booleanArrayOf()
@@ -11,48 +10,45 @@ var result = mutableListOf<Int>()
 
 fun main() = with(BufferedReader(InputStreamReader(System.`in`))) {
     val (N, M, V) = readLine().split(" ").map { it.toInt() }
-    graph = Array(N) { IntArray(N) }
-    visited = BooleanArray(N) { false }
+    graph = Array(N+1) { IntArray(N+1) }
+    visited = BooleanArray(N+1) { false }
+
     repeat(M) {
         val (num1, num2) = readLine().split(" ").map { it.toInt() }
-        graph[num1 - 1][num2 - 1] = 1
-        graph[num2 - 1][num1 - 1] = 1
+        graph[num1][num2] = 1
+        graph[num2][num1] = 1
     }
 
-    val dfsResult = dfs(V - 1, N)
-    println(dfsResult.joinToString(" "))
-
+    println(dfs(V, N).joinToString(" "))
     result.clear()
-    visited = BooleanArray(N) { false }
-    val bfsResult = bfs(V - 1, N)
-    println(bfsResult.joinToString(" "))
+    visited = BooleanArray(N+1) { false }
+    println(bfs(V, N).joinToString(" "))
 }
 
-fun dfs(v: Int, N: Int): List<Int> {
-    result.add(v+1)
-    visited[v] = true
+fun dfs(start: Int, N: Int): List<Int> {
+    result.add(start)
+    visited[start] = true
 
-    for(i in 0 until N) {
-        if(graph[v][i] != 0 && !visited[i]) {
+    for(i in 1 .. N) {
+        if(graph[start][i] != 0 && !visited[i]) {
             dfs(i, N)
         }
     }
     return result
 }
 
-fun bfs(v: Int, N: Int): List<Int> {
-    visited[v]=true
-    result.add(v+1)
+fun bfs(node: Int, N: Int): List<Int> {
+    visited[node] = true
 
-    val queue : Queue<Int> = LinkedList()
-    queue.add(v)
-    while (!queue.isEmpty()) {
+    val queue = LinkedList<Int>()
+    queue.add(node)
+    while(queue.isNotEmpty()) {
         val current = queue.poll()
-        for (i in 0 until N) {
-            if (graph[current][i] != 0 && !visited[i]) {
+        result.add(current)
+        for(i in 1 .. N) {
+            if(graph[current][i] != 0 && !visited[i]) {
                 queue.add(i)
                 visited[i] = true
-                result.add(i + 1)
             }
         }
     }
